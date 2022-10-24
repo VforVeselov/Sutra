@@ -85,6 +85,9 @@
         padding-right: 20px;
         height: 80vh;
       }
+      .nav > li {
+        margin-top: 15px;
+      }
       .nav-pills {
         --bs-nav-pills-border-radius: 0px 20px 20px 0px !important;
         --bs-nav-pills-link-active-color: #fff;
@@ -102,74 +105,36 @@
     </style>
     <script>
 
-        $.getJSON( "https://raw.githubusercontent.com/VforVeselov/MyNew/dev/src/main/resources/asanas.json", function( data ) {
+        $.getJSON( "https://raw.githubusercontent.com/VforVeselov/MyNew/dev/src/main/resources/practices.json", function( data ) {
           var items = [];
+          var i = [];
           $.each( data, function( key, val ) {
-            items.push("<li class=\"ui-state-highlight list-group-item fs-6\" id='" + val.id + "'>"+
-                      "<img style=\"width: 5rem; padding-left: 5px;\" src=\""+ val.img +"\">"+ 
-                       "<span class=\"desc\">"+val.sanskrit+"</span>"+
-                "</li>"
-                   );
+            i.push(val.id, val.asanas);
+            items.push("<li class=\"ui-state-highlight list-group-item fs-6\" id='" + val.id + "'>"+ 
+                       "<span class=\"desc\">"+val.name+"</span>"+
+                "</li>");
           });
+          $("#practice-list").append(items);
           
-          $('#sortable1').append(items);
-  
-          $("#sortable1, #sortable2" ).sortable({
-            connectWith: ".connectedSortable",
-            ///items: "li, img",
-            remove: function (e, li) {
-              li.item.clone().insertAfter(li.item).find(".desc").empty();
-              //li.item.$('desc').empty();
-              $(this).sortable('cancel');
-              return li.item.clone();
-            },
-            receive: function (e, li) {
-              //li.item.find(".desc").empty();
-              console.log(li.item.find(".desc"));
-              $("#sortable2").css('background-color', 'rgba(0,0,0,.0)');
-              //li.item..empty();              
-            },
-            over: function( event, ui ) { //triggered when sortable element hovers sortable list
-              $("#sortable2").css('background-color', 'rgba(0,0,0,.1)');
-            },
-          }).disableSelection();
-  
-          
-          $('#sortable1 li').each(function( key, val ) {
-              //console.log(key+" -> "+ val.id);
-  
-          });
-          //TODO доделать вывод айдишников.
-          
-          $('#sortable2').on('DOMSubtreeModified', function(event) {
-              var itms = [];
-              $('#result').empty();
-              $('#sortable2 li > .desc').each(function( key, val ) {
-                  //$(this).empty();
+          $(".ui-state-highlight").click(function() {
+            var images = [];
+            id = this.id;
+            
+            $.getJSON( "https://raw.githubusercontent.com/VforVeselov/MyNew/dev/src/main/resources/asanas.json", function( data ) {
+              $.each( data, function( key, val ) {
+                //console.log(i[id]);
+                i[id].forEach(element => {
+                  if (element == val.id) {
+                    images.push("<li style=\"display: inline-flex;\" class=\"ui-state-highlight list-group-item fs-6\"><img style=\"width: 5rem; padding-left: 5px;\" src=\""+ val.img +"\" /></li>");
+                  }
+                });
               });
-              //$('#result').append(itms);
+              $("#practice").empty();
+              $("#practice").append(images);
+            });     
           });
-  
-          $( "#resultbtn" ).click(function() {
-            var itms = '';
-            $('#result').empty();
-              $('#sortable2 li').each(function( key, val ) {
-                  itms += val.id+",";
-                
-              });
-              window.location.href = 'my_practice.html?p='+itms;
-              return false;
-          });
-  
-          $("#search").on("keyup", function() {
-            var value = $(this).val();
-            console.log(value)?.toLowerCase();
-            $("#sortable1 li").filter(function() {
-                //$(this.item.find(".desc")+":contains(\""+value+"\")").show();
-                $(this).toggle($(this).text()?.toLowerCase().indexOf(value) > -1)
-            });
-          });
-  
+
+
         });
     </script>
   </head>
@@ -245,13 +210,13 @@
     <!-- <hr style="background-color: #AE62E7; display: block;"> -->
     <ul class="nav nav-pills flex-column mb-auto">
       <li class="nav-item">
-        <a href="#" class="nav-link active" aria-current="page">
+        <a href="index.htm" class="nav-link text-white" aria-current="page">
           <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#home"></use></svg>
           Создать практику
         </a>
       </li>
       <li>
-        <a href="#" class="nav-link text-white">
+        <a href="#" class="nav-link text-white active">
           <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>
           Мои практики
         </a>
@@ -295,17 +260,14 @@
 
   <div class="d-flex flex-column flex-shrink-0 p-3 text-bg-white flex-grow-1">
 
-     <h2>Создавай свою практику</h2>
+     <h2>Мои практики</h2>
      <div class="d-flex flex-row">
         <div class="shadow-sm bg-body rounded me-3" style="width: 290px;"> 
-            <input type="text" class="form-control" id="search" placeholder="быстрый поиск">
-            <ul id="sortable1" class="connectedSortable list-group"></ul>
+          <ul id="practice-list" class="list-group container-fluid"></ul>
         </div> 
         <!-- <div class="b-example-divider b-example-vr"></div> -->
          <div class="shadow-sm me-3 bg-body rounded" style="width: 100%">
-          <button id="resultbtn" type="button" class="btn btn-primary">Создать практику</button>
-          <button id="savepractice" type="button" class="btn btn-primary">Сохранить практику</button>
-            <ul id="sortable2" class="connectedSortable list-group container-fluid"></ul>
+            <ul id="practice" style="display: inline-block;" class="list-group container-fluid"></ul>
         </div> 
     </div>  
   </div> 
