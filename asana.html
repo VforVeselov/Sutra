@@ -17,22 +17,12 @@
         user-select: none;
       }
 
-      .btn-primary {
-          background-color: #95D5B6 !important;
-          outline-color: #95D5B6;
-          border-color: #95D5B6;
-      }
-      .btn:hover {
-        color: var(--bs-btn-hover-color);
-        background-color: #95D5B6;
-        border-color: #AE62E7;
-      }
-
       @media (min-width: 768px) {
         .bd-placeholder-img-lg {
           font-size: 3.5rem;
         }
       }
+
       #sortable2 {
             display: inline-block;
             height: 85vh;    
@@ -61,15 +51,14 @@
         vertical-align: -.125em;
         fill: currentColor;
       }
-      .nav > li {
-        margin-top: 15px;
-      }
+
       .nav-scroller {
         position: relative;
         z-index: 2;
         height: 2.75rem;
         overflow-y: hidden;
       }
+
       .nav-scroller .nav {
         display: flex;
         flex-wrap: nowrap;
@@ -96,6 +85,9 @@
         padding-right: 20px;
         height: 80vh;
       }
+      .nav > li {
+        margin-top: 15px;
+      }
       .nav-pills {
         --bs-nav-pills-border-radius: 0px 20px 20px 0px !important;
         --bs-nav-pills-link-active-color: #fff;
@@ -112,8 +104,7 @@
 
     </style>
     <script>
-
-        $.getJSON( "https://raw.githubusercontent.com/VforVeselov/MyNew/dev/src/main/resources/asanas.json", function( data ) {
+    $.getJSON( "https://raw.githubusercontent.com/VforVeselov/MyNew/dev/src/main/resources/asanas.json", function( data ) {
           var items = [];
           $.each( data, function( key, val ) {
             items.push("<li class=\"ui-state-highlight list-group-item fs-6\" id='" + val.id + "'>"+
@@ -124,62 +115,19 @@
           });
           
           $('#sortable1').append(items);
-  
-          $("#sortable1, #sortable2" ).sortable({
-            connectWith: ".connectedSortable",
-            ///items: "li, img",
-            remove: function (e, li) {
-              li.item.clone().insertAfter(li.item).find(".desc").empty();
-              //li.item.$('desc').empty();
-              $(this).sortable('cancel');
-              return li.item.clone();
-            },
-            receive: function (e, li) {
-              //li.item.find(".desc").empty();
-              console.log(li.item.find(".desc"));
-              $("#sortable2").css('background-color', 'rgba(0,0,0,.0)');
-              //li.item..empty();              
-            },
-            over: function( event, ui ) { //triggered when sortable element hovers sortable list
-              $("#sortable2").css('background-color', 'rgba(0,0,0,.1)');
-            },
-          }).disableSelection();
-  
-          
-          $('#sortable1 li').each(function( key, val ) {
-              //console.log(key+" -> "+ val.id);
-  
+
+          $(".list-group-item").click(function() {
+            $("#practice").empty();
+            asana = data.filter(e => e.id == this.id);
+            $("#practice").append(
+                "<span>"+asana[0].sanskrit+"</span>"
+            );
           });
-          //TODO доделать вывод айдишников.
-          
-          $('#sortable2').on('DOMSubtreeModified', function(event) {
-              var itms = [];
-              $('#result').empty();
-              $('#sortable2 li > .desc').each(function( key, val ) {
-                  //$(this).empty();
-              });
-              //$('#result').append(itms);
-          });
-  
-          $( "#resultbtn" ).click(function() {
-            var itms = '';
-            $('#result').empty();
-              $('#sortable2 li').each(function( key, val ) {
-                  itms += val.id+",";
-                
-              });
-              window.location.href = 'my_practice.html?p='+itms;
-              return false;
-          });
-  
-          $("#search").on("keyup", function() {
-            var value = $(this).val();
-            $("#sortable1 li").filter(function() {
-                $(this).toggle($(this).text()?.toLowerCase().indexOf(value) > -1);
-            });
-          });
-  
-        });
+    
+    });  
+    
+
+
     </script>
   </head>
   <body cz-shortcut-listen="true">
@@ -254,13 +202,13 @@
     <!-- <hr style="background-color: #AE62E7; display: block;"> -->
     <ul class="nav nav-pills flex-column mb-auto">
       <li class="nav-item">
-        <a href="#" class="nav-link active" aria-current="page">
+        <a href="index.htm" class="nav-link text-white" aria-current="page">
           <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#home"></use></svg>
           Создать практику
         </a>
       </li>
       <li>
-        <a href="my_practices.html" class="nav-link text-white">
+        <a href="#" class="nav-link text-white">
           <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>
           Мои практики
         </a>
@@ -272,7 +220,7 @@
         </a>
       </li>
       <li>
-        <a href="asana.html" class="nav-link text-white">
+        <a href="asana.html" class="nav-link text-white active">
           <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#grid"></use></svg>
           Управление асанами
         </a>
@@ -304,46 +252,18 @@
 
   <div class="d-flex flex-column flex-shrink-0 p-3 text-bg-white flex-grow-1">
 
-     <h2>Создавай свою практику</h2>
+     <h2>Asana </h2>
      <div class="d-flex flex-row">
         <div class="shadow-sm bg-body rounded me-3" style="width: 290px;"> 
-            <input type="text" class="form-control" id="search" placeholder="быстрый поиск">
-            <ul id="sortable1" class="connectedSortable list-group"></ul>
+          <ul id="sortable1" class="list-group container-fluid"></ul>
         </div> 
         <!-- <div class="b-example-divider b-example-vr"></div> -->
          <div class="shadow-sm me-3 bg-body rounded" style="width: 100%">
-          <button id="resultbtn" type="button" class="btn btn-primary">Создать практику</button>
-          <button id="savepractice" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">Сохранить практику</button>
-            <ul id="sortable2" class="connectedSortable list-group container-fluid"></ul>
+            <ul id="practice" style="display: inline-block;" class="list-group container-fluid"></ul>
         </div> 
     </div>  
   </div> 
 
-  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h1 class="modal-title fs-5" id="exampleModalLabel">Сохранить практику</h1>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <form>
-            <div class="mb-3">
-              <label for="recipient-name" class="col-form-label">Название</label>
-              <input type="text" class="form-control" id="recipient-name" placeholder="Утренняя пракика чтобы проснуться">
-            </div>
-            <div class="mb-3">
-              <label for="message-text" class="col-form-label">Название</label>
-              <textarea class="form-control" id="message-text" placeholder="пару слов о практике"></textarea>
-            </div>
-          </form>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-primary">Сохранить</button>
-        </div>
-      </div>
-    </div>
-  </div>
 </main>
 
 

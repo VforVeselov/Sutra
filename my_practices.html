@@ -130,8 +130,13 @@
                 });
               });
               $("#practice").empty();
-              $("#practice").append(images);
-            });     
+
+              images.forEach( e=> {
+                $("#practice").append(e).fadeIn(10000);
+              });
+              //$("#practice").append(images);
+            });
+                 
           });
 
 
@@ -228,7 +233,7 @@
         </a>
       </li>
       <li>
-        <a href="#" class="nav-link text-white">
+        <a href="asana.html" class="nav-link text-white">
           <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#grid"></use></svg>
           Управление асанами
         </a>
